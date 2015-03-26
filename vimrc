@@ -22,6 +22,7 @@ au FileType haskell nnoremap <buffer> <silent> <F2> :HdevtoolsClear<CR>
 " syntastic
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%{fugitive#statusline()}
 set statusline+=%*
 
 map <silent> <Leader>e :Errors<CR>
@@ -34,7 +35,7 @@ let g:syntastic_check_on_wq = 0
 
 
 " custom settings
-colorscheme ron
+colorscheme murphy
 
 set nocompatible
 
@@ -124,4 +125,12 @@ nnoremap <C-l> <C-w>l
 
 
 nmap <F8> :TagbarToggle<CR>
+
+
+" Nerdtree
+map <F6> :NERDTreeToggle<CR>
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
