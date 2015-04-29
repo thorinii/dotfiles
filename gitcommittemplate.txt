@@ -2,7 +2,7 @@
 # Summary of change (imperative past tense)
 
 
-# Description of change
+# Description of change (imperative past tense)
 
 
-# Issue/ticket id (if applicable)
+# Issue/ticket url (if applicable)
