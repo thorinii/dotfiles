@@ -35,7 +35,7 @@ let g:syntastic_check_on_wq = 0
 
 
 " custom settings
-colorscheme murphy
+colorscheme Mustang
 
 set nocompatible
 
@@ -63,7 +63,7 @@ set ruler
 set backspace=indent,eol,start
 set laststatus=2
 set number
-set undofile
+"set undofile
 
 
 let mapleader = ","
@@ -105,7 +105,9 @@ vnoremap <F1> <ESC>
 
 nnoremap ; :
 
-inoremap jj <ESC>
+inoremap jk <ESC>
+inoremap kj <ESC>
+au VimEnter * :silent !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
 
 
 au FocusLost * :wa
@@ -130,7 +132,21 @@ nmap <F8> :TagbarToggle<CR>
 " Nerdtree
 map <F6> :NERDTreeToggle<CR>
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+
+" strip trailing whitespace on save
+fun! <SID>StripTrailingWhitespace()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+
+autocmd BufWritePre * :call <SID>StripTrailingWhitespace()
+
+
+autocmd Filetype gitcommit setlocal spell textwidth=75
 
