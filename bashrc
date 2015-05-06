@@ -198,3 +198,14 @@ export HALCYON_S3_BUCKET="halcyon-sandboxes"
 export HALCYON_S3_ENDPOINT="s3-ap-southeast-2.amazonaws.com"
 export HALCYON_S3_ACL="public-read"
 #export HALCYON_NO_UPLOAD=1
+
+
+function net_add_delay {
+  echo "Adding $1 delay"
+  sudo tc qdisc add dev lo root netem delay $1
+}
+
+function net_rm_delay {
+  echo "Removing delay"
+  sudo tc qdisc del dev lo root netem del 100ms
+}
