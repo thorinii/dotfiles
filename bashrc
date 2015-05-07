@@ -192,8 +192,6 @@ source ~/programming/others/liquidprompt/liquidprompt
 #export HALCYON_NO_SELF_UPDATE=1
 #export HALCYON_KEEP_DEPENDENCIES=1
 
-export HALCYON_AWS_ACCESS_KEY_ID="AKIAI754F3P2GIBW2WWQ"
-export HALCYON_AWS_SECRET_ACCESS_KEY="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"
 export HALCYON_S3_BUCKET="halcyon-sandboxes"
 export HALCYON_S3_ENDPOINT="s3-ap-southeast-2.amazonaws.com"
 export HALCYON_S3_ACL="public-read"
