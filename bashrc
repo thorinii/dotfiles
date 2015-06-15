@@ -117,7 +117,7 @@ fi
 
 
 # Android SDK PATH
-export ANDROID_HOME=/home/lachlan/adt-linux/sdk
+export ANDROID_HOME=/home/lachlan/Android/sdk
 
 export BEES_HOME=/home/lachlan/cloudbees-sdk-1.5.2/
 
@@ -138,45 +138,6 @@ export PATH="$PATH:/home/lachlan/ide/activator-1.3.2-minimal/"
 
 # Start gnome-keyring-daemon if not already
 
-SSH_AUTH_SOCK=`ss -l | grep -o "/run[/a-zA-Z0-9]*keyring-[a-zA-Z0-9]*/ssh"`
-
-if [ -z $SSH_AUTH_SOCK ]; then
-  pidof gnome-keyring-daemon > /dev/null
-  if [ $? -eq 0 ]; then
-    pidof gnome-keyring-daemon | xargs kill
-  fi
-
-  echo "Starting gnome-keyring-daemon"
-
-  DAEMON_OUTPUT=`nohup gnome-keyring-daemon -s -d`
-
-  SSH_AUTH_SOCK=`echo $DAEMON_OUTPUT | grep 'SSH_AUTH_SOCK' | grep -o '/run.*/ssh'`
-  GNOME_KEYRING_PID=`echo $DAEMON_OUTPUT | grep PID | grep -o '=[0-9]*' | grep -o '[0-9]*'`
-
-  export GNOME_KEYRING_PID
-  echo $GNOME_KEYRING_PID > /home/lachlan/.GNOME_KEYRING.pid
-fi
-
-if [ -e '/home/lachlan/.GNOME_KEYRING.pid' ]; then
-  GNOME_KEYRING_PID=`cat /home/lachlan/.GNOME_KEYRING.pid`
-  export GNOME_KEYRING_PID
-
-  SSH_AUTH_SOCK=`ss -l | grep -o "/run[/a-zA-Z0-9]*keyring-[a-zA-Z0-9]*/ssh"`
-fi
-
-if [ -z $SSH_AUTH_SOCK ]; then
-  SSH_AUTH_SOCK=`ss -l | grep -o "/run[/a-zA-Z0-9]*keyring-[a-zA-Z0-9]*/ssh"`
-fi
-
-if [ -z $SSH_AUTH_SOCK ]; then
-  echo "Could not properly start or connect to gnome-keyring-daemon"
-fi
-
-export SSH_AUTH_SOCK
-export PATH=$PATH:/usr/local/cuda/bin
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/lib
-
-
 
 gitpush() {
   COMMIT_MESSAGE=$1
@@ -186,7 +147,7 @@ gitpush() {
 }
 
 
-source ~/programming/others/liquidprompt/liquidprompt
+source ~/dotfiles/liquidprompt/liquidprompt
 
 
 #export HALCYON_NO_SELF_UPDATE=1

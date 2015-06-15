@@ -35,8 +35,6 @@ let g:syntastic_check_on_wq = 0
 
 
 " custom settings
-colorscheme Mustang
-
 set nocompatible
 
 set modelines=0
@@ -149,4 +147,8 @@ autocmd BufWritePre * :call <SID>StripTrailingWhitespace()
 
 
 autocmd Filetype gitcommit setlocal spell textwidth=75
+
+
+set t_Co=256
+colorscheme Mustang
 
