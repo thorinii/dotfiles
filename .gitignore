@@ -1,3 +1,4 @@
 /backup
 /vendor
 /vim/autoload/plug.vim
+/vim/plugged
