@@ -1,154 +1,239 @@
 set nocompatible
 
+call plug#begin('~/.vim/plugged')
+" plugins
 
-execute pathogen#infect()
-silent execute pathogen#helptags()
+Plug 'pangloss/vim-javascript'
 
+Plug 'kien/ctrlp.vim'
+Plug 'Raimondi/delimitMate'
+Plug 'mtth/scratch.vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-sensible'
+Plug 'vim-airline/vim-airline'
+Plug 'easymotion/vim-easymotion'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'croaker/mustang-vim'
+Plug 'glortho/feral-vim'
+Plug 'digitaltoad/vim-pug'
+Plug 'junegunn/goyo.vim'
+Plug 'matze/vim-lilypond'
+" Unavailable due to no git clone: Plug '~/.vim/rawplugins/YouCompleteMe'
 
-filetype plugin indent on
-
-
-syntax enable
-
-
-autocmd BufEnter *.hs set formatprg=pointfree
-
-
-" vim-hdevtools
-au FileType haskell nnoremap <buffer> <F1> :HdevtoolsType<CR>
-au FileType haskell nnoremap <buffer> <silent> <F2> :HdevtoolsClear<CR>
-
-
-" syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%{fugitive#statusline()}
-set statusline+=%*
-
-map <silent> <Leader>e :Errors<CR>
-map <Leader>s :SyntasticToggleMode<CR>
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+" ALE is a Syntastic look-alike except it's Asynchronous
+Plug 'vim-syntastic/syntastic'
+" Plug 'w0rp/ale'
 
 
-" custom settings
-set nocompatible
-
-set modelines=0
-
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
-set shiftround
-set expandtab
-
-
-set encoding=utf-8
-set scrolloff=3
-set autoindent
-set showmode
-set showcmd
-set hidden
-set wildmenu
-set wildmode=list:longest,full
-set visualbell
-set cursorline
-set ttyfast
-set ruler
-set backspace=indent,eol,start
-set laststatus=2
-set number
-"set undofile
-
-
-let mapleader = ","
-
-
-nnoremap / /\v
-vnoremap / /\v
-set ignorecase
-set smartcase
-set gdefault
-set incsearch
-set showmatch
-set hlsearch
-nnoremap <leader><space> :noh<cr>
-nnoremap <tab> %
-vnoremap <tab> %
-
-
-set nowrap
-set textwidth=79
-set formatoptions=qrn1
-set colorcolumn=85
-
-
-nnoremap <up> <nop>
-nnoremap <down> <nop>
-nnoremap <left> <nop>
-nnoremap <right> <nop>
-inoremap <up> <nop>
-inoremap <down> <nop>
-inoremap <left> <nop>
-inoremap <right> <nop>
-nnoremap j gj
-nnoremap k gk
-
-inoremap <F1> <ESC>
-nnoremap <F1> <ESC>
-vnoremap <F1> <ESC>
-
-nnoremap ; :
-
-inoremap jk <ESC>
-inoremap kj <ESC>
-au VimEnter * :silent !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
-
-
-au FocusLost * :wa
-
-
-" Leader (/custom) commands
-nnoremap <leader>W :%s/\s\+$//<cr>:let @/=''<CR>
-
-
-
-" Window splits
-nnoremap <leader>w <C-w>v<C-w>l
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-
-
-nmap <F8> :TagbarToggle<CR>
-
-
-" Nerdtree
-map <F6> :NERDTreeToggle<CR>
-autocmd StdinReadPre * let s:std_in=1
-" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
-
-
-" strip trailing whitespace on save
-fun! <SID>StripTrailingWhitespace()
-    let l = line(".")
-    let c = col(".")
-    %s/\s\+$//e
-    call cursor(l, c)
-endfun
-
-autocmd BufWritePre * :call <SID>StripTrailingWhitespace()
-
-
-autocmd Filetype gitcommit setlocal spell textwidth=75
+" end plugins
+call plug#end()
 
 
 set t_Co=256
-colorscheme Mustang
+syntax on
+set background=dark
 
+
+"
+" Core
+"
+
+" Backspace is managed by vim-sensible, but I need it here too because some
+" plugins depend on it during start up.
+set backspace=indent,eol,start
+" Enable line numbers.
+set number
+
+" Enable invisible characters.
+set list
+" More natural splitting.
+set splitbelow
+set splitright
+" Set a default indent, but vim-sleuth should adjust it.
+set tabstop=2
+set shiftwidth=2
+set expandtab
+" Disable swap files.
+set noswapfile
+" Write files as they are, don't mess with line endings etc.
+set binary
+" Disable the completion preview window.
+set completeopt-=preview
+" Make session files minimal.
+set sessionoptions=blank,curdir,folds,help,tabpages,winsize
+" Hide buffers instead of closing them
+set hidden
+
+inoremap jk <esc>
+nnoremap j gj
+nnoremap k gk
+vnoremap j gj
+vnoremap k gk
+
+let mapleader = "\<Space>"
+
+nnoremap <Leader>o :CtrlP<CR>
+nnoremap <Leader>w :w<CR>
+
+vmap <Leader>y "+y
+vmap <Leader>d "+d
+nmap <Leader>p "+p
+nmap <Leader>P "+P
+vmap <Leader>p "+p
+vmap <Leader>P "+P
+
+nmap <F5> :Goyo<CR>
+
+nnoremap <Leader>/ :Commentary<CR>
+vnoremap <Leader>/ :Commentary<CR>
+
+nnoremap <Leader>e :b#<CR>
+nnoremap <Leader>. :nohlsearch<CR>
+
+
+" Trim the trailing white space from the file.
+function! s:trim_trailing_whitespace()
+  %s/\s\+$//e
+endfunction
+
+nnoremap <silent> <leader>cw :call <SID>trim_trailing_whitespace()<CR>
+
+
+set wildignore+=node_modules
+
+"
+" Highlighting
+"
+
+" Highlight searches.
+set hlsearch
+
+" Highlight the current line.
+set cursorline
+set cursorcolumn
+
+function! s:after_colorscheme()
+  " Make spelling problems easier to read.
+  highlight clear SpellBad
+  highlight clear SpellCap
+  highlight clear SpellLocal
+  highlight clear SpellRare
+
+  highlight SpellBad cterm=underline
+  highlight SpellCap cterm=underline
+  highlight SpellLocal cterm=underline
+  highlight SpellRare cterm=underline
+
+  " Stop the cross hair ruining highlighting.
+  highlight CursorLine cterm=NONE ctermbg=235 ctermfg=NONE guibg=#3a3a3a guifg=NONE
+  highlight CursorColumn cterm=NONE ctermbg=235 ctermfg=NONE guibg=#3a3a3a guifg=NONE
+
+  " Make conceal look better.
+  highlight Conceal cterm=bold ctermbg=NONE ctermfg=67
+endfunction
+
+augroup after_colorscheme
+  autocmd!
+  autocmd ColorScheme * call s:after_colorscheme()
+augroup END
+
+" Make search case insensitive, but become sensitive if an upper case
+" character is used.
+set ignorecase
+set smartcase
+
+
+"
+" Vim Javascript config
+"
+
+set conceallevel=1
+set concealcursor=nvic
+
+let g:javascript_conceal_function = "λ"
+let g:javascript_conceal_arrow_function = "⇒"
+let g:javascript_conceal_null = "ø"
+let g:javascript_conceal_undefined = "¿"
+
+let g:syntastic_javascript_checkers = ['standard']
+
+
+"
+" Perf
+"
+
+" Send more characters to the terminal at once.
+" Makes things smoother, will probably be enabled by my terminal anyway.
+set ttyfast
+
+" Stops macros rendering every step.
+set lazyredraw
+
+
+"
+" Undo
+"
+
+" Enable persistent undo.
+set undofile
+set undodir=~/.vim/undo
+set undolevels=1000
+set undoreload=10000
+
+
+"
+" Random
+"
+
+let g:syntastic_check_on_open=1
+let delimitMate_expand_cr=1
+imap <C-c> <CR><Esc>O
+
+
+let g:ctrlp_lazy_update = 100
+let g:ctrlp_clear_cache_on_exit = 0
+let g:ctrlp_max_files = 0
+
+if executable("ag")
+  let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --ignore ''.git'' --ignore ''.DS_Store'' --ignore ''node_modules'' --hidden -g ""'
+endif
+
+
+" List all possible buffers with "gb" and accept a new buffer argument
+nnoremap <Leader>b :ls<CR>:b
+
+
+set expandtab
+
+
+set mouse=a
+
+
+"
+" Vim Fugitive
+"
+
+nnoremap <silent> <leader>gs :<C-u>Gstatus<CR>
+nnoremap <silent> <leader>gw :<C-u>Gwrite<CR>
+nnoremap <silent> <leader>gc :<C-u>Gcommit<CR>
+nnoremap <silent> <leader>gb :<C-u>Gblame<CR>
+nnoremap <silent> <leader>gd :<C-u>Gdiff<CR>
+nnoremap <silent> <leader>gj :<C-u>Gpull<CR>
+nnoremap <silent> <leader>gk :<C-u>Gpush<CR>
+nnoremap <silent> <leader>gf :<C-u>Gfetch<CR>
+
+
+colorscheme feral
+
+
+autocmd Filetype gitcommit set textwidth=73
+autocmd Filetype markdown set wrap linebreak nolist
+
+set ttymouse=sgr
+
+
+" Command to wrap selected lines of code in braces
+vmap <leader>{ >gvc{<CR><ESC>pkddk
+
+set backupcopy=yes

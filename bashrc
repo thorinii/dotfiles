@@ -37,7 +37,7 @@ fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-    xterm-color) color_prompt=yes;;
+    xterm-color|*-256color) color_prompt=yes;;
 esac
 
 # uncomment for a colored prompt, if the terminal has the capability; turned
@@ -84,10 +84,14 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+alias gg='git grep -n'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -113,58 +117,11 @@ if ! shopt -oq posix; then
   fi
 fi
 
+export PATH=$PATH:/home/lachlan/.bin
+export PATH=/home/lachlan/globalnpm/node_modules/.bin/:$PATH
 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-
-# Android SDK PATH
-export ANDROID_HOME=/home/lachlan/Android/sdk
-
-export BEES_HOME=/home/lachlan/cloudbees-sdk-1.5.2/
-
-export SCALA_HOME=/home/lachlan/scala/scala-2.11.0
-
-export PATH=${PATH}:${BEES_HOME}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$SCALA_HOME/bin
-
-### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
-
-export PATH="/app/halcyon:/app/cabal/bin:/app/ghc/bin:/app/bin:$PATH"
-
-export PATH="/home/lachlan/bin:$PATH"
-
-export PATH="$PATH:/home/lachlan/ide/activator-1.3.2-minimal/"
-
-
-
-# Start gnome-keyring-daemon if not already
-
-
-gitpush() {
-  COMMIT_MESSAGE=$1
-  BRANCH=${2:-master}
-
-  git commit -m "$COMMIT_MESSAGE" && git push origin $BRANCH
-}
-
-
-source ~/dotfiles/liquidprompt/liquidprompt
-
-
-#export HALCYON_NO_SELF_UPDATE=1
-#export HALCYON_KEEP_DEPENDENCIES=1
-
-export HALCYON_S3_BUCKET="halcyon-sandboxes"
-export HALCYON_S3_ENDPOINT="s3-ap-southeast-2.amazonaws.com"
-export HALCYON_S3_ACL="public-read"
-#export HALCYON_NO_UPLOAD=1
-
-
-function net_add_delay {
-  echo "Adding $1 delay"
-  sudo tc qdisc add dev lo root netem delay $1
-}
-
-function net_rm_delay {
-  echo "Removing delay"
-  sudo tc qdisc del dev lo root netem del 100ms
-}
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"

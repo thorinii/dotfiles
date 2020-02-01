@@ -1,4 +1,0 @@
-
-# Summary of change (present tense; "what does this commit do to the source?")
-# Description of change (present tense)
-# Issue/ticket url (if applicable)

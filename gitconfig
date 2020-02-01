@@ -1,0 +1,39 @@
+[user]
+    email = flipsidelachy@gmail.com
+    name = Lachlan Phillips
+
+[alias]
+    ci = commit
+    co = checkout
+    cr = checkout -b
+    s = status -s
+    st = status
+    d = diff
+    ds = diff --staged
+
+    # <commit> <branch> <message> [<author>]
+    ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+
+    # <commit> <branch> <message> [<author>]\n <file...>
+    ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+
+    # <commit> <date> <branch> <message> [<author>]
+    lds = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+
+    # <commit> <date ago> <branch> <message> [<author>]
+    ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
+
+    # inspect a file's history
+    fl = log -u
+
+    # view a graph of all commits
+    gr = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --graph --full-history --branches --decorate
+
+[color]
+    ui = auto
+
+[push]
+    default = current
+
+[core]
+    editor = vim
