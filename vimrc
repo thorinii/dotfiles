@@ -22,8 +22,8 @@ Plug 'matze/vim-lilypond'
 " Unavailable due to no git clone: Plug '~/.vim/rawplugins/YouCompleteMe'
 
 " ALE is a Syntastic look-alike except it's Asynchronous
-Plug 'vim-syntastic/syntastic'
-" Plug 'w0rp/ale'
+" Plug 'vim-syntastic/syntastic'
+Plug 'w0rp/ale'
 
 
 " end plugins
@@ -111,7 +111,6 @@ set hlsearch
 
 " Highlight the current line.
 set cursorline
-set cursorcolumn
 
 function! s:after_colorscheme()
   " Make spelling problems easier to read.
@@ -149,7 +148,7 @@ set smartcase
 "
 
 set conceallevel=1
-set concealcursor=nvic
+set concealcursor=nc
 
 let g:javascript_conceal_function = "λ"
 let g:javascript_conceal_arrow_function = "⇒"
@@ -230,7 +229,9 @@ colorscheme feral
 autocmd Filetype gitcommit set textwidth=73
 autocmd Filetype markdown set wrap linebreak nolist
 
-set ttymouse=sgr
+if !has('nvim')
+  set ttymouse=sgr
+endif
 
 
 " Command to wrap selected lines of code in braces
