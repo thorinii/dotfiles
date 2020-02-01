@@ -91,7 +91,7 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
-alias gg='git grep -n'
+alias gg='git grep -nE'
 alias vim='nvim'
 
 # Add an "alert" alias for long running commands.  Use like so:
@@ -118,11 +118,11 @@ if ! shopt -oq posix; then
   fi
 fi
 
-export PATH=$PATH:/home/lachlan/.bin
-export PATH=/home/lachlan/globalnpm/node_modules/.bin/:$PATH
-
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+export PATH="$HOME/globalnode/node_modules/.bin:$HOME/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+
+[[ $- = *i* ]] && source ~/dotfiles/vendor/liquidprompt/liquidprompt

@@ -1,29 +1,35 @@
 set nocompatible
+set runtimepath+=/usr/share/lilypond/2.18.2/vim/
 
 call plug#begin('~/.vim/plugged')
 " plugins
 
-Plug 'pangloss/vim-javascript'
+" system
+Plug 'w0rp/ale'
 
+" languages
+Plug 'digitaltoad/vim-pug'
+Plug 'pangloss/vim-javascript'
+Plug 'matze/vim-lilypond'
+
+" UI
+Plug 'vim-airline/vim-airline'
+Plug 'tpope/vim-commentary'
 Plug 'kien/ctrlp.vim'
 Plug 'Raimondi/delimitMate'
-Plug 'mtth/scratch.vim'
-Plug 'airblade/vim-gitgutter'
-Plug 'tpope/vim-sensible'
-Plug 'vim-airline/vim-airline'
-Plug 'easymotion/vim-easymotion'
-Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
-Plug 'croaker/mustang-vim'
-Plug 'glortho/feral-vim'
-Plug 'digitaltoad/vim-pug'
+Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/goyo.vim'
-Plug 'matze/vim-lilypond'
-" Unavailable due to no git clone: Plug '~/.vim/rawplugins/YouCompleteMe'
+Plug 'whatyouhide/vim-lengthmatters'
+Plug 'tpope/vim-surround'
 
-" ALE is a Syntastic look-alike except it's Asynchronous
-" Plug 'vim-syntastic/syntastic'
-Plug 'w0rp/ale'
+if !has('nvim')
+  Plug 'tpope/vim-sensible'
+endif
+
+" themes
+Plug 'glortho/feral-vim'
+Plug 'NLKNguyen/papercolor-theme'
 
 
 " end plugins
@@ -83,13 +89,16 @@ nmap <Leader>P "+P
 vmap <Leader>p "+p
 vmap <Leader>P "+P
 
-nmap <F5> :Goyo<CR>
+nnoremap <F5> :Goyo<CR>
 
 nnoremap <Leader>/ :Commentary<CR>
 vnoremap <Leader>/ :Commentary<CR>
 
 nnoremap <Leader>e :b#<CR>
 nnoremap <Leader>. :nohlsearch<CR>
+
+" splitting lines (inverse of J)
+nnoremap K i<CR><Esc>l
 
 
 " Trim the trailing white space from the file.
@@ -100,7 +109,7 @@ endfunction
 nnoremap <silent> <leader>cw :call <SID>trim_trailing_whitespace()<CR>
 
 
-set wildignore+=node_modules
+set wildignore+=*/node_modules/*
 
 "
 " Highlighting
@@ -125,8 +134,8 @@ function! s:after_colorscheme()
   highlight SpellRare cterm=underline
 
   " Stop the cross hair ruining highlighting.
-  highlight CursorLine cterm=NONE ctermbg=235 ctermfg=NONE guibg=#3a3a3a guifg=NONE
-  highlight CursorColumn cterm=NONE ctermbg=235 ctermfg=NONE guibg=#3a3a3a guifg=NONE
+  " highlight CursorLine cterm=NONE ctermbg=235 ctermfg=NONE guibg=#3a3a3a guifg=NONE
+  " highlight CursorColumn cterm=NONE ctermbg=235 ctermfg=NONE guibg=#3a3a3a guifg=NONE
 
   " Make conceal look better.
   highlight Conceal cterm=bold ctermbg=NONE ctermfg=67
@@ -151,7 +160,7 @@ set conceallevel=1
 set concealcursor=nc
 
 let g:javascript_conceal_function = "λ"
-let g:javascript_conceal_arrow_function = "⇒"
+" let g:javascript_conceal_arrow_function = "⇒"
 let g:javascript_conceal_null = "ø"
 let g:javascript_conceal_undefined = "¿"
 
@@ -223,7 +232,7 @@ nnoremap <silent> <leader>gk :<C-u>Gpush<CR>
 nnoremap <silent> <leader>gf :<C-u>Gfetch<CR>
 
 
-colorscheme feral
+colorscheme PaperColor
 
 
 autocmd Filetype gitcommit set textwidth=73
@@ -238,3 +247,16 @@ endif
 vmap <leader>{ >gvc{<CR><ESC>pkddk
 
 set backupcopy=yes
+
+
+" ALE linters to run
+let g:ale_linters = {
+\  'javascript': ['eslint'],
+\}
+let g:ale_fixers = {
+\   'javascript': ['eslint'],
+\}
+
+
+let g:gitgutter_grep=''
+set updatetime=300

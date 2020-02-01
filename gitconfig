@@ -1,39 +1,80 @@
 [user]
-    email = flipsidelachy@gmail.com
-    name = Lachlan Phillips
+  email = flipsidelachy@gmail.com
+  name = Lachlan Phillips
 
 [alias]
-    ci = commit
-    co = checkout
-    cr = checkout -b
-    s = status -s
-    st = status
-    d = diff
-    ds = diff --staged
+  ### Shorthands ###
 
-    # <commit> <branch> <message> [<author>]
-    ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+  # commit
+  ci = commit
 
-    # <commit> <branch> <message> [<author>]\n <file...>
-    ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+  # checkout
+  co = checkout
 
-    # <commit> <date> <branch> <message> [<author>]
-    lds = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+  # create branch
+  cr = checkout -b
 
-    # <commit> <date ago> <branch> <message> [<author>]
-    ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
+  # short status
+  s = status -s
 
-    # inspect a file's history
-    fl = log -u
+  # full status
+  st = status
 
-    # view a graph of all commits
-    gr = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --graph --full-history --branches --decorate
+  # diff of current working tree
+  d = diff
+  dw = diff --ignore-space-change
+
+  # diff of what's been added/rm'd
+  ds = diff --staged
+  dsw = diff --staged --ignore-space-change
+
+
+  # commits all tracked changes
+  wip = commit -am "WIP"
+
+
+  ### Log formats ###
+
+  # One line per commit
+  # <commit> <branch> <message> [<author>]
+  ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+
+  # One line + the changed files per commit
+  # <commit> <branch> <message> [<author>]\n <file...>
+  ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+
+  # One line per commit plus the date of each
+  # <commit> <date> <branch> <message> [<author>]
+  lds = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+
+  # One line per commit plus the time since each
+  # <commit> <date ago> <branch> <message> [<author>]
+  ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
+
+  # inspect a file's history
+  fl = log -u
+
+  # view a graph of all commits
+  gr = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --graph --full-history --branches --decorate
+
+
+  ### Random helpers ###
+
+  # cleanup `dev` by default or from any branch specified (should be on that branch first)
+  cll = "!git branch --merged \"${1:-master}\" | grep -v '\\*\\|master\\|dev' | xargs -r git branch -d #"
+  cleanup-local = "!git branch --merged \"${1:-master}\" | grep -v '\\*\\|master\\|dev' | xargs -r git branch -d #"
+
+  # fetch, prune, and pull
+  # requires you to be on a branch suitable for pulling
+  fpp = "!git fetch --all --prune; git pull"
 
 [color]
-    ui = auto
-
+  ui = auto
 [push]
-    default = current
-
+  default = current
 [core]
-    editor = vim
+  editor = vim
+  filemode = false
+[https]
+[rerere]
+  enabled = false
