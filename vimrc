@@ -77,7 +77,9 @@ set sessionoptions=blank,curdir,folds,help,tabpages,winsize
 set hidden
 
 " show find/replaces in realtime while typing
-set inccommand=nosplit
+if has('nvim')
+  set inccommand=nosplit
+endif
 
 
 inoremap jk <esc>
