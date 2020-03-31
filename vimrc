@@ -1,5 +1,7 @@
 set nocompatible
 set runtimepath+=/usr/share/lilypond/2.18.2/vim/
+let g:python3_host_prog = '/usr/bin/python3'
+
 
 call plug#begin('~/.vim/plugged')
 " plugins
@@ -8,16 +10,17 @@ call plug#begin('~/.vim/plugged')
 Plug 'w0rp/ale'
 
 " languages
-Plug 'digitaltoad/vim-pug'
+Plug 'digitaltoad/vim-jade'
 Plug 'pangloss/vim-javascript'
 Plug 'matze/vim-lilypond'
+Plug 'digitaltoad/vim-pug'
 Plug 'leafgarland/typescript-vim'
 Plug 'posva/vim-vue'
 
 " UI
 Plug 'vim-airline/vim-airline'
+Plug 'wincent/command-t'
 Plug 'tpope/vim-commentary'
-Plug 'kien/ctrlp.vim'
 Plug 'Raimondi/delimitMate'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
@@ -73,6 +76,10 @@ set sessionoptions=blank,curdir,folds,help,tabpages,winsize
 " Hide buffers instead of closing them
 set hidden
 
+" show find/replaces in realtime while typing
+set inccommand=nosplit
+
+
 inoremap jk <esc>
 nnoremap j gj
 nnoremap k gk
@@ -81,7 +88,9 @@ vnoremap k gk
 
 let mapleader = "\<Space>"
 
-nnoremap <Leader>o :CtrlP<CR>
+nnoremap <Leader>o :CommandT<CR>
+
+" save
 nnoremap <Leader>w :w<CR>
 
 vmap <Leader>y "+y
@@ -96,8 +105,22 @@ nnoremap <F5> :Goyo<CR>
 nnoremap <Leader>/ :Commentary<CR>
 vnoremap <Leader>/ :Commentary<CR>
 
+
+" list buffers with fuzzy-find
+nnoremap <Leader>b :CommandTBuffer<CR>
+" list buffers without fuzzy-find
+nnoremap <Leader>B :ls<CR>:b
+" go to next buffer
+nnoremap <Leader>n :bn<CR>
+" go to previous buffer
+nnoremap <Leader>v :bp<CR>
+" switch to last-used buffer
 nnoremap <Leader>e :b#<CR>
+
+" hide search
 nnoremap <Leader>. :nohlsearch<CR>
+" git grep for focused word
+nnoremap <F8> :execute "Ggrep '\\<" . expand("<cword>") . "\\>'"<CR>:cw<CR>
 
 nnoremap <Leader>f :ALEFix<CR>
 
@@ -115,6 +138,9 @@ nnoremap <silent> <leader>cw :call <SID>trim_trailing_whitespace()<CR>
 
 set wildignore+=*/node_modules/*
 set wildignore+=*/dist/*
+set wildignore+=*/venv/*
+set wildignore+=*.pyc
+
 
 "
 " Highlighting
@@ -122,9 +148,6 @@ set wildignore+=*/dist/*
 
 " Highlight searches.
 set hlsearch
-
-" Highlight the current line.
-set cursorline
 
 function! s:after_colorscheme()
   " Make spelling problems easier to read.
@@ -139,8 +162,8 @@ function! s:after_colorscheme()
   highlight SpellRare cterm=underline
 
   " Stop the cross hair ruining highlighting.
-  " highlight CursorLine cterm=NONE ctermbg=235 ctermfg=NONE guibg=#3a3a3a guifg=NONE
-  " highlight CursorColumn cterm=NONE ctermbg=235 ctermfg=NONE guibg=#3a3a3a guifg=NONE
+  highlight CursorLine cterm=NONE ctermbg=235 ctermfg=NONE guibg=#3a3a3a guifg=NONE
+  highlight CursorColumn cterm=NONE ctermbg=235 ctermfg=NONE guibg=#3a3a3a guifg=NONE
 
   " Make conceal look better.
   highlight Conceal cterm=bold ctermbg=NONE ctermfg=67
@@ -165,11 +188,8 @@ set conceallevel=1
 set concealcursor=nc
 
 let g:javascript_conceal_function = "λ"
-" let g:javascript_conceal_arrow_function = "⇒"
 let g:javascript_conceal_null = "ø"
 let g:javascript_conceal_undefined = "¿"
-
-let g:syntastic_javascript_checkers = ['standard']
 
 
 "
@@ -213,8 +233,7 @@ if executable("ag")
 endif
 
 
-" List all possible buffers with "gb" and accept a new buffer argument
-nnoremap <Leader>b :ls<CR>:b
+let g:CommandTFileScanner='git'
 
 
 set expandtab
@@ -235,6 +254,32 @@ nnoremap <silent> <leader>gd :<C-u>Gdiff<CR>
 nnoremap <silent> <leader>gj :<C-u>Gpull<CR>
 nnoremap <silent> <leader>gk :<C-u>Gpush<CR>
 nnoremap <silent> <leader>gf :<C-u>Gfetch<CR>
+
+
+" NVim terminal
+if has('nvim')
+  " make Escape work
+  tnoremap <Esc> <C-\><C-n>
+
+  " make Ctrl-R (paste) work
+  tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
+
+  " switching between windows
+  tnoremap <A-h> <C-\><C-N><C-w>h
+  tnoremap <A-j> <C-\><C-N><C-w>j
+  tnoremap <A-k> <C-\><C-N><C-w>k
+  tnoremap <A-l> <C-\><C-N><C-w>l
+endif
+
+" switching between windows
+inoremap <A-h> <C-\><C-N><C-w>h
+inoremap <A-j> <C-\><C-N><C-w>j
+inoremap <A-k> <C-\><C-N><C-w>k
+inoremap <A-l> <C-\><C-N><C-w>l
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
 
 
 colorscheme PaperColor
@@ -269,3 +314,10 @@ let g:ale_fixers = {
 
 let g:gitgutter_grep=''
 set updatetime=300
+
+
+" override Vue template files to be plain Javascript.
+" this is because the Vue syntax highlighting is really slow.
+augroup vueftdetect
+  au BufRead,BufNewFile *.vue set filetype=javascript
+augroup END

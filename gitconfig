@@ -10,6 +10,8 @@
 
   # checkout
   co = checkout
+  # freshly checkout a pull request that may have had non-ff changes
+  prco = "!git fetch origin && git checkout ${1} && git reset --hard origin/${1} #"
 
   # create branch
   cr = checkout -b
@@ -22,15 +24,20 @@
 
   # diff of current working tree
   d = diff
-  dw = diff --ignore-space-change
+  dcsv = diff --color-words="[^[:space:],<>]+"
+  dw = diff --ignore-space-change --color-words
 
   # diff of what's been added/rm'd
   ds = diff --staged
-  dsw = diff --staged --ignore-space-change
+  dscsv = diff --staged --color-words="[^[:space:],<>]+"
+  dsw = diff --staged --ignore-space-change --color-words
+
+  # branch list
+  br = branch --sort=-committerdate
 
 
   # commits all tracked changes
-  wip = commit -am "WIP"
+  wip = "!git commit -am \"WIP $1\" #"
 
 
   ### Log formats ###
@@ -38,6 +45,9 @@
   # One line per commit
   # <commit> <branch> <message> [<author>]
   ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+
+  # One line per commit, but limit to first few
+  top = "!git ls \"$(git parent)\".."
 
   # One line + the changed files per commit
   # <commit> <branch> <message> [<author>]\n <file...>
@@ -58,6 +68,13 @@
   gr = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --graph --full-history --branches --decorate
 
 
+  ### Summary of Branches ###
+  prsum = "!git for-each-ref refs/heads/ --format='%(refname:short)' | grep -v master | grep -v dev | xargs -r git show-branch --topics dev"
+
+  # find the nearest parent branch to HEAD
+  parent = "!git show-branch | grep '*' | grep -v \"$(git rev-parse --abbrev-ref HEAD)\" | head -n1 | egrep -o '\\[.*\\]' | sed -r 's/\\^.*$|\\]|\\[//g' #"
+
+
   ### Random helpers ###
 
   # cleanup `dev` by default or from any branch specified (should be on that branch first)
@@ -67,6 +84,11 @@
   # fetch, prune, and pull
   # requires you to be on a branch suitable for pulling
   fpp = "!git fetch --all --prune; git pull"
+
+  # interactive rebase on parent branch
+  ri = "!git rebase -i \"$(git parent)\""
+  # interactive rebase on parent branch with autosquash
+  ria = "!git rebase -i --autosquash \"$(git parent)\""
 
 [color]
   ui = auto

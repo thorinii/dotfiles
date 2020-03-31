@@ -1,111 +1,72 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+#!/usr/bin/bash -f
 
-# If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
+if [ -f /etc/bashrc ]; then
+  . /etc/bashrc
+fi
 
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
+PS1="\u@\h \W/ \t\$ "
 
-# append to the history file, don't overwrite it
+
+
+#
+# Low-level config
+#
+
+# setup infinite history
+export HISTFILESIZE=
+export HISTSIZE=
+export HISTTIMEFORMAT="[%F %T] "
+# Change the file location because certain bash sessions truncate .bash_history file upon close.
+# http://superuser.com/questions/575479/bash-history-truncated-to-500-lines-on-each-login
+export HISTFILE=~/.bash_eternal_history
+# Force prompt to write history after every command.
+# http://superuser.com/questions/20900/bash-history-loss
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear"
 shopt -s histappend
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-#shopt -s globstar
+if ! tput setaf 0 >/dev/null 2>&1; then
+  export TERM=xterm-256color
+fi
+
+
+#
+# User config
+#
+
+shopt -s direxpand
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
-
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
-esac
-
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-#force_color_prompt=yes
-
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
-fi
-
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
+  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+  alias ls='ls --color=auto'
 
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+  alias grep='grep --color=auto'
+  alias fgrep='fgrep --color=auto'
+  alias egrep='egrep --color=auto'
 fi
 
-# colored GCC warnings and errors
-#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 alias gg='git grep -nE'
 alias vim='nvim'
+alias grep='grep --color=auto'
+alias tree='tree --dirsfirst -C'
 
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+# enable prompt
+[[ $- = *i* ]] && source ~/dotfiles/vendor/liquidprompt/liquidprompt
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
+# enable fuzzy-finder for history
+[[ $- = *i* && -f ~/.fzf.bash ]] && source ~/.fzf.bash
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -118,11 +79,133 @@ if ! shopt -oq posix; then
   fi
 fi
 
+if [[ -f /etc/bash_completion.d/git ]]; then
+  . /etc/bash_completion.d/git
+elif [[ -f /usr/share/bash-completion/completions/git ]]; then
+  . /usr/share/bash-completion/completions/git
+fi
+
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+alias enable_nvm='[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"; [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"'
 
-export PATH="$HOME/globalnode/node_modules/.bin:$HOME/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+export PATH="$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+export PATH="$HOME/.yarn/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/globalnode/node_modules/.bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export LD_LIBRARY_PATH="$HOME/bin/lib:$LD_LIBRARY_PATH"
 
 
-[[ $- = *i* ]] && source ~/dotfiles/vendor/liquidprompt/liquidprompt
+
+
+#
+# Functions
+#
+
+pipe_port () {
+  local host="$1"
+  local port="$2"
+  echo "Redirecting localhost:$port -> $host:$port"
+  ssh -N -L "$port:localhost:$port" "$host"
+}
+pipe_port_3 () {
+  local host="$1"
+  local port="$2"
+  local local_port="$3"
+  echo "Redirecting localhost:$local_port -> $host:$port"
+  ssh -N -L "$local_port:localhost:$port" "$host"
+}
+
+
+# takes the first word of each line
+firstword () { awk '{ print $1; }'; }
+# `wordn <number>` takes the nth word of each line
+wordn () { awk '{ print $'"$1"'; }'; }
+
+
+# a more compact list of images
+dls () {
+  (
+    echo $'NAME\tCREATED\tREPO'
+    docker image ls \
+      | tail -n+2 \
+      | sed -r 's/  +/\t/g' \
+      | sed -r 's/^([a-z0-9]+([.:-][a-z0-9]+)+)\/([^\t]+)\t(.*)/\3\t\4\t\1/g' \
+      | awk -F$'\t' '{print $1":"$2 "\t" $4 "\t" $6;}' \
+      | sort
+  ) | column -t -s $'\t'
+}
+
+# a more compact list of containers
+dps () {
+  (
+    echo $'NAME\tPORTS\tIMAGE'
+    docker ps -a --format '{{.Names}}\t{{.Ports}}\t{{.Status}}\t{{.Image}}' | sort \
+    | while read line; do
+      local name ports uptime image
+      name="$(echo "$line" | cut -d$'\t' -f1)"
+      ports="$(echo "$line" | cut -d$'\t' -f2 | sed -r 's;/tcp|0\.0\.0\.0:;;g ; s/(^| )[0-9]+(, |$)//g')"
+      uptime="$(echo "$line" | cut -d$'\t' -f3)"
+      image="$(echo "$line" | cut -d$'\t' -f4)"
+
+      if [[ "$ports" != *", "* ]]; then
+        ports="$(echo "$ports" | sed -r 's/->[0-9]+//g')"
+      fi
+
+      uptime="${uptime/ (healthy)/}"
+      uptime="${uptime/ hours/h}"
+      if [[ "$uptime" == "Exited"* ]]; then
+        local exit_code ago
+        exit_code="$(echo "$uptime" | sed -r 's/Exited \(([0-9]+)\).*/\1/g')"
+        ago="$(echo "$uptime" | sed -r 's/.*\) //')"
+        ago="${ago/ ago/}"
+        if [[ "$exit_code" == "0" ]]; then
+          uptime="-"
+        else
+          uptime="e$exit_code $ago"
+        fi
+
+        ports="$uptime"
+      fi
+
+      if [[ "$image" == *":"*":"* ]]; then
+        local repo relative_name
+        repo="$(echo "$image" | cut -d/ -f1 | cut -d: -f1 | sed -r 's/([a-z0-9])[a-z0-9]+-?/\1/g ; s/\..+//g')"
+        relative_name="$(echo "$image" | cut -d/ -f2-)"
+        image="$repo:$relative_name"
+      fi
+      image="${image/el7\//}"
+
+      printf '%s\t%s\t%s\n' "$name" "$ports" "$image"
+    done
+  ) | column -t -s $'\t'
+}
+
+
+# executes a bash command in the supplied docker container
+debash () {
+  local container_id="${1}"
+  docker exec -it "$container_id" bash
+}
+
+# executes a bash command in the supplied docker container
+depsql () {
+  local container_id="${1}"
+  local db_id="${2}"
+  docker exec -it "$container_id" bash -c "psql '$db_id'"
+}
+
+# executes a command in the supplied docker container
+de () {
+  docker exec -it "$@"
+}
+
+
+# a function that curls a URL, and returns formatted JSON
+curlj () {
+  curl -s "$@" | jq -C '.'
+}
+# the same as above, but also through less
+curljl () {
+  curlj "$@" | less -R
+}
