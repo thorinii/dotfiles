@@ -11,6 +11,8 @@ Plug 'w0rp/ale'
 Plug 'digitaltoad/vim-pug'
 Plug 'pangloss/vim-javascript'
 Plug 'matze/vim-lilypond'
+Plug 'leafgarland/typescript-vim'
+Plug 'posva/vim-vue'
 
 " UI
 Plug 'vim-airline/vim-airline'
@@ -97,6 +99,8 @@ vnoremap <Leader>/ :Commentary<CR>
 nnoremap <Leader>e :b#<CR>
 nnoremap <Leader>. :nohlsearch<CR>
 
+nnoremap <Leader>f :ALEFix<CR>
+
 " splitting lines (inverse of J)
 nnoremap K i<CR><Esc>l
 
@@ -110,6 +114,7 @@ nnoremap <silent> <leader>cw :call <SID>trim_trailing_whitespace()<CR>
 
 
 set wildignore+=*/node_modules/*
+set wildignore+=*/dist/*
 
 "
 " Highlighting
@@ -252,9 +257,13 @@ set backupcopy=yes
 " ALE linters to run
 let g:ale_linters = {
 \  'javascript': ['eslint'],
+\  'typescript': ['eslint'],
+\  'vue': ['eslint'],
 \}
 let g:ale_fixers = {
-\   'javascript': ['eslint'],
+\  'javascript': ['eslint'],
+\  'typescript': ['eslint'],
+\  'vue': ['eslint'],
 \}
 
 
