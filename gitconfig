@@ -90,6 +90,9 @@
   # interactive rebase on parent branch with autosquash
   ria = "!git rebase -i --autosquash \"$(git parent)\""
 
+  # touch a file and "add it with intent"
+  touch = "!touch \"$1\" && git add -N \"$1\" #"
+
 [color]
   ui = auto
 [push]

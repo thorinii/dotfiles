@@ -57,9 +57,12 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 alias gg='git grep -nE'
-alias vim='nvim'
 alias grep='grep --color=auto'
 alias tree='tree --dirsfirst -C'
+
+if command -v nvim >/dev/null; then
+  alias vim='nvim'
+fi
 
 
 # enable prompt
