@@ -212,3 +212,56 @@ curlj () {
 curljl () {
   curlj "$@" | less -R
 }
+
+
+# get duration in seconds of a audio/video file
+ffduration () {
+  local file="$1"
+  ffprobe "${file}" 2>&1 \
+    | grep Duration \
+    | grep -oE '[0-9]+:[0-9]+:[0-9.]+' \
+    | sed -r 's/([0-9]+):([0-9]+):([0-9.]+)/scale=2; (\1 * 60 + \2) * 60 + \3/' \
+    | bc
+}
+
+# add numbers from stdin together
+add_numbers () {
+  paste -d+ -s | bc
+}
+
+# print a duration in seconds as hours, minutes, seconds
+pretty_duration () {
+  local time="$1"
+
+  local seconds minutes hours days
+  seconds="$(sed -r 's/\..+//' <<<"$time")"
+  minutes=0
+  hours=0
+  days=0
+
+  if [[ "$seconds" -gt 60 ]]; then
+    minutes="$(( seconds / 60 ))"
+    seconds="$(( seconds - (minutes * 60) ))"
+  fi
+  if [[ "$minutes" -gt 60 ]]; then
+    hours="$(( minutes / 60 ))"
+    minutes="$(( minutes - (hours * 60) ))"
+  fi
+  if [[ "$hours" -gt 24 ]]; then
+    days="$(( hours / 24 ))"
+    hours="$(( hours - (days * 24) ))"
+  fi
+
+  local format=
+  format="${seconds}s"
+  if [[ "$minutes" -gt 0 ]]; then
+    format="${minutes}m ${format}"
+  fi
+  if [[ "$hours" -gt 0 ]]; then
+    format="${hours}h ${format}"
+  fi
+  if [[ "$days" -gt 0 ]]; then
+    format="${days}days ${format}"
+  fi
+  echo "$format"
+}
