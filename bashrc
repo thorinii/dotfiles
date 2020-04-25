@@ -217,6 +217,15 @@ curljl () {
 # get duration in seconds of a audio/video file
 ffduration () {
   local file="$1"
+
+  # pipe mode
+  if [[ -z "$file" ]]; then
+    while IFS= read -r line; do
+      ffduration "$line"
+    done
+    return
+  fi
+
   ffprobe "${file}" 2>&1 \
     | grep Duration \
     | grep -oE '[0-9]+:[0-9]+:[0-9.]+' \
@@ -232,6 +241,14 @@ add_numbers () {
 # print a duration in seconds as hours, minutes, seconds
 pretty_duration () {
   local time="$1"
+
+  # pipe mode
+  if [[ -z "$time" ]]; then
+    while IFS= read -r line; do
+      pretty_duration "$line"
+    done
+    return
+  fi
 
   local seconds minutes hours days
   seconds="$(sed -r 's/\..+//' <<<"$time")"
