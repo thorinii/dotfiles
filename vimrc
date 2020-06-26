@@ -138,6 +138,10 @@ endfunction
 nnoremap <silent> <leader>cw :call <SID>trim_trailing_whitespace()<CR>
 
 
+" go to the first character rather than column 1
+map 0 ^
+
+
 set wildignore+=*/node_modules/*
 set wildignore+=*/dist/*
 set wildignore+=*/venv/*
