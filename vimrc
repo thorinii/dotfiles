@@ -14,7 +14,7 @@ Plug 'digitaltoad/vim-jade'
 Plug 'pangloss/vim-javascript'
 Plug 'matze/vim-lilypond'
 Plug 'digitaltoad/vim-pug'
-Plug 'leafgarland/typescript-vim'
+Plug 'leafgarland/typescript-vim', {'for': ['typescript', 'typescript.tsx']}
 Plug 'posva/vim-vue'
 
 " UI
