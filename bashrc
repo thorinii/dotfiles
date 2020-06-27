@@ -282,3 +282,6 @@ pretty_duration () {
   fi
   echo "$format"
 }
+
+
+[[ $- = *i* ]] && enable_nvm
